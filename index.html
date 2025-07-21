@@ -15,33 +15,39 @@
 
   <body>
     <div class="page">
-      <div class="popup" id="profile-popup">
-        <div class="popup__container">
-          <button class="popup__close-button"></button>
-          <h2 class="popup__title">Editar perfil</h2>
-          <form class="popup__form" name="edit-profile-form" novalidate>
-            <input
-              type="text"
-              name="profile-name"
-              placeholder="Nombre"
-              class="popup__input popup__input_type-name"
-              minlength="2"
-              maxlength="30"
-              required
-            />
-            <input
-              type="text"
-              name="profile-bio"
-              placeholder="Acerca de mí"
-              class="popup__input popup__input_type-bio"
-              minlength="1"
-              maxlength="100"
-              required
-            />
-            <button type="submit" class="popup__submit-button">Guardar</button>
-          </form>
+      <template id="popup">
+        <div class="popup" id="popup">
+          <div class="popup__container">
+            <button class="popup__close-button"></button>
+            <h2 class="popup__title"></h2>
+            <form class="popup__form" name="edit-form" novalidate>
+              <input
+                type="text"
+                name="first-input"
+                class="popup__input popup__first-input"
+                required
+              />
+              <input
+                type="text"
+                name="second-input"
+                class="popup__input popup__second-input"
+                required
+              />
+              <button type="submit" class="popup__submit-button"></button>
+            </form>
+          </div>
         </div>
-      </div>
+      </template>
+
+      <template id="popup__image">
+        <div class="popup__image popup" id="places-popup">
+          <div class="popup__image-container">
+            <button class="popup__image-close-button"></button>
+            <img class="popup__image-content" />
+            <p class="popup__image-title"></p>
+          </div>
+        </div>
+      </template>
 
       <header class="header">
         <img
@@ -70,72 +76,16 @@
         </section>
 
         <section class="places">
-          <div class="places__card">
-            <img
-              src="./images/kilauea-image.jpg"
-              alt="Imagen del volcán Kilauea"
-              class="places__image"
-            />
-            <div class="places__info">
-              <h2 class="places__title">Kilauea</h2>
-              <button class="places__like-button"></button>
+          <template id="place__card">
+            <div class="places__card">
+              <button class="places__delete-button"></button>
+              <img class="places__image" />
+              <div class="places__info">
+                <h2 class="places__title"></h2>
+                <button class="places__like-button"></button>
+              </div>
             </div>
-          </div>
-          <div class="places__card">
-            <img
-              src="./images/canyon-image.jpg"
-              alt="Imagen del Gran Cañón"
-              class="places__image"
-            />
-            <div class="places__info">
-              <h2 class="places__title">Gran Cañón</h2>
-              <button class="places__like-button"></button>
-            </div>
-          </div>
-          <div class="places__card">
-            <img
-              src="./images/tahoe-image.jpg"
-              alt="Imagen del Lago Tahoe"
-              class="places__image"
-            />
-            <div class="places__info">
-              <h2 class="places__title">Lago Tahoe</h2>
-              <button class="places__like-button"></button>
-            </div>
-          </div>
-          <div class="places__card">
-            <img
-              src="./images/muir-image.jpg"
-              alt="Imagen del Parque Nacional de las Secuoyas"
-              class="places__image"
-            />
-            <div class="places__info">
-              <h2 class="places__title">Parque Nacional de las Secuoyas</h2>
-              <button class="places__like-button"></button>
-            </div>
-          </div>
-          <div class="places__card">
-            <img
-              src="./images/mcway-image.jpg"
-              alt="Imagen de McWay Falls"
-              class="places__image"
-            />
-            <div class="places__info">
-              <h2 class="places__title">Cataratas McWay</h2>
-              <button class="places__like-button"></button>
-            </div>
-          </div>
-          <div class="places__card">
-            <img
-              src="./images/hubbard-image.jpg"
-              alt="Imagen del Glaciar Hubbard"
-              class="places__image"
-            />
-            <div class="places__info">
-              <h2 class="places__title">Glaciar Hubbard</h2>
-              <button class="places__like-button"></button>
-            </div>
-          </div>
+          </template>
         </section>
       </main>
 
