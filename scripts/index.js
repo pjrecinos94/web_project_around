@@ -1,3 +1,12 @@
+import {
+  resetValidation,
+  hasInvalidInput,
+  toggleButtonState,
+} from "./validate.js";
+
+const profileEditButton = document.querySelector(".profile__edit-button");
+const addPlaceButton = document.querySelector(".profile__add-button");
+
 function addCard(placesTitle, placesImage) {
   const places = document.querySelector(".places");
   const cardTemplate = document.querySelector("#place__card").content;
@@ -21,7 +30,7 @@ function addCard(placesTitle, placesImage) {
     evt.target.classList.toggle("places__like-button_active");
   });
 
-  function openImagePopup(evt) {
+  function openImagePopup() {
     const imagePopupTemplate = document.querySelector("#popup__image").content;
     const imagePopup = imagePopupTemplate
       .querySelector(".popup__image")
@@ -37,17 +46,13 @@ function addCard(placesTitle, placesImage) {
     imagePopupContent.alt = placesTitle;
 
     document.body.append(imagePopup);
-    imagePopup.classList.add("popup_opened");
+    imagePopup.classList.add("popup_active");
 
     imagePopupCloseButton.addEventListener("click", function () {
       imagePopup.remove();
     });
 
-    document.querySelector(".popup").addEventListener("click", (evt) => {
-      if (evt.target === imagePopup) {
-        imagePopup.remove();
-      }
-    });
+    imagePopup.addEventListener("click", closePopupOnClick);
   }
 
   placesImageElement.addEventListener("click", openImagePopup);
@@ -86,107 +91,118 @@ initialCards.forEach((item) => {
   addCard(item.name, item.link);
 });
 
-const profileEditButton = document.querySelector(".profile__edit-button");
-
-function openPopup(evt) {
-  const popup = document.querySelector("#popup");
-  popup.classList.add("popup_opened");
+function openPopup(popup) {
+  popup.classList.add("popup_active");
 }
 
-function editProfile(evt) {
-  const popupTemplate = document.querySelector("#popup").content;
-  const popup = popupTemplate.querySelector(".popup").cloneNode(true);
+function closePopup(popup) {
+  popup.classList.remove("popup_active");
+  const form = popup.querySelector(".popup__form");
+  if (form) {
+    resetValidation(form);
+    form.reset();
+  }
+}
+
+function keydownHandler(evt) {
+  const activePopup = document.querySelector(".popup_active");
+  if (evt.key === "Escape") {
+    closePopup(activePopup);
+  }
+}
+
+function closePopupOnClick(evt) {
+  const activePopup = document.querySelector(".popup_active");
+  if (evt.target === activePopup) {
+    closePopup(activePopup);
+  }
+}
+
+function editProfile() {
+  const popup = document.querySelector("#popup__edit-profile");
   const popupCloseButton = popup.querySelector(".popup__close-button");
-  const popupTitle = popup.querySelector(".popup__title");
-  const popupFirstInput = popup.querySelector(".popup__first-input");
-  const popupSecondInput = popup.querySelector(".popup__second-input");
+  const popupNameInput = popup.querySelector(".popup__name-input");
+  const popupAboutInput = popup.querySelector(".popup__about-input");
   const currentName = document.querySelector(".profile__name");
   const currentBio = document.querySelector(".profile__bio");
   const popupSubmitButton = popup.querySelector(".popup__submit-button");
 
-  popupTitle.textContent = "Editar perfil";
+  toggleButtonState([popupNameInput, popupAboutInput], popupSubmitButton);
 
-  popupFirstInput.value = currentName.textContent;
-  popupFirstInput.placeholder = "Nombre";
-  popupFirstInput.name = "profile-name";
-  popupFirstInput.setAttribute("minlength", 2);
-  popupFirstInput.setAttribute("maxlength", 30);
-  popupSecondInput.value = currentBio.textContent;
-  popupSecondInput.placeholder = "Acerca de mí";
-  popupSecondInput.name = "profile-bio";
-  popupSecondInput.setAttribute("minlength", 1);
-  popupSecondInput.setAttribute("maxlength", 100);
+  popupNameInput.value = currentName.textContent;
+  popupAboutInput.value = currentBio.textContent;
 
-  popupSubmitButton.textContent = "Guardar";
-
-  document.body.append(popup);
-  popup.classList.add("popup_opened");
+  openPopup(popup);
 
   popupCloseButton.addEventListener("click", function () {
-    popup.remove();
+    closePopup(popup);
   });
 
-  popup.addEventListener("click", (evt) => {
-    if (evt.target === popup) {
-      popup.remove();
+  popup.addEventListener("click", closePopupOnClick);
+
+  popupSubmitButton.addEventListener("click", function (evt) {
+    evt.preventDefault();
+
+    if (
+      hasInvalidInput([popupNameInput, popupAboutInput]) ||
+      (currentName.textContent === popupNameInput.value &&
+        currentBio.textContent === popupAboutInput.value)
+    ) {
+      return;
     }
+
+    currentName.textContent = popupNameInput.value;
+    currentBio.textContent = popupAboutInput.value;
+
+    closePopup(popup);
   });
 
-  popupSubmitButton.addEventListener("click", function () {
-    currentName.textContent = popupFirstInput.value;
-    currentBio.textContent = popupSecondInput.value;
-    popup.remove();
-  });
+  document.addEventListener("keydown", keydownHandler);
 }
 
-profileEditButton.addEventListener("click", editProfile);
-
-const addPlaceButton = document.querySelector(".profile__add-button");
-
 function addPlace(evt) {
-  const popupTemplate = document.querySelector("#popup").content;
-  const popup = popupTemplate.querySelector(".popup").cloneNode(true);
+  const popup = document.querySelector("#popup__add-card");
   const popupCloseButton = popup.querySelector(".popup__close-button");
-  const popupTitle = popup.querySelector(".popup__title");
-  const popupFirstInput = popup.querySelector(".popup__first-input");
-  const popupSecondInput = popup.querySelector(".popup__second-input");
+  const popupTitleInput = popup.querySelector(".popup__title-input");
+  const popupUrlInput = popup.querySelector(".popup__url-input");
   const popupSubmitButton = popup.querySelector(".popup__submit-button");
 
-  popupTitle.textContent = "Nuevo lugar";
-
-  popupFirstInput.placeholder = "Título";
-  popupFirstInput.name = "place-name";
-  popupSecondInput.placeholder = "Enlace a la imagen";
-  popupSecondInput.name = "place-link";
-
-  const placeTitle = popupFirstInput.value;
-  const placeImage = popupSecondInput.value;
-
-  popupSubmitButton.textContent = "Crear";
-
-  document.body.append(popup);
-  popup.classList.add("popup_opened");
+  openPopup(popup);
 
   popupCloseButton.addEventListener("click", function () {
-    popup.remove();
+    closePopup(popup);
   });
 
-  popupSubmitButton.addEventListener("click", function () {
-    const placeTitle = popupFirstInput.value;
-    const placeImage = popupSecondInput.value;
+  popup.addEventListener("click", closePopupOnClick);
+
+  popupSubmitButton.addEventListener("click", function (evt) {
+    evt.preventDefault();
+
+    if (hasInvalidInput([popupTitleInput, popupUrlInput])) {
+      return;
+    }
+
+    const placeTitle = popupTitleInput.value;
+    const placeImage = popupUrlInput.value;
     const newCard = {
       name: placeTitle,
       link: placeImage,
     };
+
+    if (!placeTitle || !placeImage) {
+      return;
+    }
+
     addCard(newCard.name, newCard.link);
-    popup.remove();
+    closePopup(popup);
+
+    popupTitleInput.value = "";
+    popupUrlInput.value = "";
   });
 
-  popup.addEventListener("click", (evt) => {
-    if (evt.target === popup) {
-      popup.remove();
-    }
-  });
+  document.addEventListener("keydown", keydownHandler);
 }
+
+profileEditButton.addEventListener("click", editProfile);
 
 addPlaceButton.addEventListener("click", addPlace);
