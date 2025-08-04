@@ -102,7 +102,7 @@
   color: #c4c4c4;
 }
 
-.popup__form_input-error {
+.popup__error-message {
   font-family: Inter, Arial, sans-serif;
   font-size: 12px;
   line-height: 1;
